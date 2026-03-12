@@ -48,29 +48,33 @@ echo "=== allowedTools count ===" ; python3 -c "import json; d=json.load(open('$
 
 ## Step 2: Collect conversation evidence
 
-Write to `~/.claude/tmp/audit/` so subagents can read it (subagents cannot access `/tmp`).
+Read conversation files directly — do NOT write to disk and pass paths to subagents (subagents cannot read `~/.claude/` paths). Instead, read content here and inline it into agent prompts in Step 3.
 
 ```bash
 PROJECT_PATH=$(pwd | sed 's|/|-|g' | sed 's|^-||')
 CONVO_DIR=~/.claude/projects/-${PROJECT_PATH}
-SCRATCH=~/.claude/tmp/audit
-mkdir -p "$SCRATCH"
 
-# Extract last 15 conversations
-for f in $(ls -t "$CONVO_DIR"/*.jsonl 2>/dev/null | head -15); do
-  base=$(basename "$f" .jsonl)
-  cat "$f" | jq -r '
-    if .type == "user" then "USER: " + (.message.content // "")
-    elif .type == "assistant" then
-      "ASSISTANT: " + ((.message.content // []) | map(select(.type == "text") | .text) | join("\n"))
-    else empty
-    end
-  ' 2>/dev/null | grep -v "^ASSISTANT: $" > "$SCRATCH/${base}.txt"
-done
-
-ls -lhS "$SCRATCH"
-echo "SCRATCH=$SCRATCH"
+# List the 15 most recent conversations with sizes
+ls -lhS "$CONVO_DIR"/*.jsonl 2>/dev/null | head -15
 ```
+
+For each conversation file you want to include, use the Read tool (or jq via Bash) to extract its text content directly into a variable in your context. Assign files to agents B and C based on size:
+- Large (>50KB): 1–2 per agent
+- Medium (10–50KB): 3–5 per agent
+- Small (<10KB): up to 10 per agent
+
+Extract each file's content with:
+```bash
+cat <file>.jsonl | jq -r '
+  if .type == "user" then "USER: " + ((.message.content // "") | if type == "array" then map(select(.type == "text") | .text) | join(" ") else . end)
+  elif .type == "assistant" then
+    "ASSISTANT: " + ((.message.content // []) | map(select(.type == "text") | .text) | join("\n"))
+  else empty
+  end
+' 2>/dev/null | grep -v "^ASSISTANT: $" | head -300
+```
+
+Store the output in your context. You will paste it inline into the agent B and C prompts below.
 
 ## Step 3: Launch parallel diagnostic agents
 
@@ -107,7 +111,9 @@ Output: bullet points only, state the detected tier at the top, grouped by: [CLA
 Prompt:
 ```
 Read: [project]/.claude/settings.local.json, [project]/CLAUDE.md, [project]/.claude/skills/**/SKILL.md
-Also read conversation files: [batch of SCRATCH/*.txt]
+
+Conversation evidence (inline — no file reading needed):
+[PASTE EXTRACTED CONVERSATION CONTENT HERE]
 
 This project is tier: [SIMPLE / STANDARD / COMPLEX] — apply only the checks appropriate for this tier.
 
@@ -133,7 +139,9 @@ Output: bullet points only, state the detected tier at the top, grouped by: [hoo
 Prompt:
 ```
 Read: ~/.claude/CLAUDE.md, [project]/CLAUDE.md
-Read conversation files: [batch of SCRATCH/*.txt]
+
+Conversation evidence (inline — no file reading needed):
+[PASTE EXTRACTED CONVERSATION CONTENT HERE]
 
 Analyze actual behavior against stated rules:
 
@@ -151,10 +159,7 @@ Analyze actual behavior against stated rules:
 Output: bullet points only, grouped by: [rules violated] [repeated corrections] [add to local CLAUDE.md] [add to global CLAUDE.md] [anti-patterns]
 ```
 
-Assign conversation files to agents B and C based on size:
-- Large files (>50KB): 1-2 per agent
-- Medium (10-50KB): 3-5 per agent
-- Small (<10KB): up to 10 per agent
+Paste the extracted conversation content inline into agent B and C prompts. Do not pass file paths.
 
 ## Step 4: Synthesize and present
 
