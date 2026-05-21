@@ -1,7 +1,7 @@
 ---
 name: check
 description: "Reviews code diffs and release-ready changes after implementation, runs on-demand project-wide code-quality audits with a 4-axis scorecard, executes approved implementation plans, extracts project-specific constraints from repository context, auto-fixes safe issues, and drives approved release, publish, push, release-reaction, and issue/PR follow-through. Also triages issues and PRs when the user mentions them. Not for exploring ideas, debugging, or document prose review."
-when_to_use: "review, 看看代码, 检查一下, 有没有问题, 是否需要优化, 合并前, 继续优化, 优化代码, 看看issue, 看看PR, release, publish, push, release reaction, GitHub reaction, 发布, 提交, 关闭issue, 发布表情, release表情, close issue, issue close, review my code, check changes, before merge, before release, code review, code-review, audit, project audit, 项目体检, 代码质量评分, scorecard, linus review"
+when_to_use: "review, 看看代码, 检查一下, 有没有问题, 是否需要优化, 合并前, 继续优化, 优化代码, 看看issue, 看看PR, release, publish, push, release reaction, GitHub reaction, 发布, 提交, 关闭issue, 发布表情, release表情, close issue, issue close, review my code, check changes, before merge, before release, code review, code-review, audit, project audit, 项目体检, 项目评分, 给项目打分, 深入分析项目代码, 评估项目质量, 代码质量评分, scorecard, linus review, rate this codebase, score this project"
 dispatch_intent: "Code review, before merge, release gates, generated artifacts, safety sinks, publish/push/reaction follow-through, triage issues/PRs, project-wide code-quality audit scorecard"
 ---
 
@@ -24,7 +24,7 @@ Pick the mode that matches the user's intent, then read that section in full. Mo
 | "look at issues", "review PRs", "triage", "批量处理" | [Triage Mode](#triage-mode) |
 | "is this worth a release", "值不值得发版" | [Release Worthiness Analysis](#release-worthiness-analysis) |
 | "commit", "push", "publish", "release", "close issue", "发布表情" | [Ship / Release Follow-through](#ship--release-follow-through) |
-| "audit", "项目体检", "代码质量评分", "scorecard", "linus review" | [Project Audit](#project-audit-mode) |
+| "audit", "项目体检", "项目评分", "给项目打分", "深入分析项目代码", "scorecard", "linus review" | [Project Audit](#project-audit-mode) |
 | Document, PDF, prose review | Delegate to `/write` (see [Document Review](#document-review)) |
 
 Before any mode, run [Project Context Extraction](#project-context-extraction) and (if memory is in scope) [Durable Context Preflight](#durable-context-preflight).
