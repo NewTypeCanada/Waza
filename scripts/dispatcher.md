@@ -14,7 +14,7 @@ You have eight skills available. Match the user's intent to the right skill, rea
 <!-- routing-table:start -->
 | Intent | Skill | File |
 |--------|-------|------|
-| Code review, before merge, release gates, generated artifacts, safety sinks, publish/push/reaction follow-through, triage issues/PRs | check | `skills/check/SKILL.md` |
+| Code review, before merge, release gates, generated artifacts, safety sinks, publish/push/reaction follow-through, triage issues/PRs, project-wide code-quality audit scorecard | check | `skills/check/SKILL.md` |
 | UI, component, page, visual interface, frontend, artifact-grounded screenshot aesthetic complaint | design | `skills/design/SKILL.md` |
 | Codex/Claude ignoring instructions, agent config audit, hooks/MCP broken, health token usage, AI coding code rot, hotspot ownership, unclear context, missing verification, stale verifier output | health | `skills/health/SKILL.md` |
 | Error, crash, regression, screenshot-reported defect, test failure, stale cache, runtime boundary, why broken | hunt | `skills/hunt/SKILL.md` |

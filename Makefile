@@ -56,6 +56,7 @@ verify-scripts:
 	  skills/read/scripts/fetch_feishu.py \
 	  skills/read/scripts/fetch_weixin.py \
 	  skills/read/scripts/fetch_local.py \
+	  skills/check/scripts/audit_signals.py \
 	  skills/health/scripts/check_doc_refs.py \
 	  skills/health/scripts/check_verifier_output.py \
 	  skills/health/scripts/check_agent_context.py \

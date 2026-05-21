@@ -17,7 +17,7 @@
     },
     {
       "name": "waza-check",
-      "description": "Reviews code diffs and release-ready changes after implementation, executes approved implementation plans, extracts project-specific constraints from repository context, auto-fixes safe issues, and drives approved release, publish, push, release-reaction, and issue/PR follow-through. Also triages issues and PRs when the user mentions them. Not for exploring ideas, debugging, or document prose review.",
+      "description": "Reviews code diffs and release-ready changes after implementation, runs on-demand project-wide code-quality audits with a 4-axis scorecard, executes approved implementation plans, extracts project-specific constraints from repository context, auto-fixes safe issues, and drives approved release, publish, push, release-reaction, and issue/PR follow-through. Also triages issues and PRs when the user mentions them. Not for exploring ideas, debugging, or document prose review.",
       "version": "3.24.0",
       "category": "development",
       "source": "./skills/check",
