@@ -55,6 +55,7 @@ Examples: `verify_skills.py` is a script; `rules/english.md` and `rules/chinese.
 - Keep `skills/RESOLVER.md` in sync when a skill description, trigger, or scope changes.
 - Keep each `description` concrete enough for automatic routing.
 - Avoid broad skills that mix unrelated workflows.
+- Eight skills is the hard cap. Do not propose a 9th skill or split an existing one. Behavior additions land in `references/`, `rules/`, `scripts/`, or `rules/anti-patterns.md`, not as a new skill.
 - Keep generic programmer capabilities in Waza. Project-specific constraints should be extracted from public repository context or user-provided task context.
 - Treat `code-review` as an invocation alias for Waza `check`, not as a separate generic skill.
 - Waza `check` must remain project-aware without depending on unpublished local files. It extracts commands, generated artifacts, risk areas, and release rules from the target diff, public docs, manifests, CI config, and user-provided context.
