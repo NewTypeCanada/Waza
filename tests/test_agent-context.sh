@@ -9,7 +9,12 @@ CHECKER="$ROOT/skills/health/scripts/check-agent-context.sh"
 tmpdir=$(make_tmpdir)
 project="$tmpdir/project"
 home_dir="$tmpdir/home"
-mkdir -p "$project" "$home_dir/.codex"
+mkdir -p \
+  "$project" \
+  "$project/.pi/skills/local-skill" \
+  "$home_dir/.codex" \
+  "$home_dir/.pi/agent/skills/global-skill" \
+  "$home_dir/.agents/skills/legacy-skill"
 
 printf '%s\n' \
   '## Project' \
@@ -33,12 +38,47 @@ printf '%s\n' 'global codex rule' > "$home_dir/.codex/AGENTS.md"
   printf '%s\n' 'trust_level = "trusted"'
 } > "$home_dir/.codex/config.toml"
 
+printf '%s\n' '---' 'name: local-skill' '---' > "$project/.pi/skills/local-skill/SKILL.md"
+printf '%s\n' '---' 'name: global-skill' '---' > "$home_dir/.pi/agent/skills/global-skill/SKILL.md"
+printf '%s\n' '---' 'name: legacy-skill' '---' > "$home_dir/.agents/skills/legacy-skill/SKILL.md"
+printf '%s\n' '{"pi":{"skills":["./skills"]}}' > "$project/package.json"
+
+{
+  printf '%s\n' '{'
+  printf '%s\n' '  "skills": ["core"],'
+  printf '%s\n' '  "packages": ["npm:@tw93/waza"],'
+  printf '%s\n' '  "apiToken": "PI_TOKEN_SHOULD_NOT_LEAK"'
+  printf '%s\n' '}'
+} > "$home_dir/.pi/agent/settings.json"
+
+{
+  printf '%s\n' '{'
+  printf '%s\n' '  "skills": {"local": true},'
+  printf '%s\n' '  "packages": {"project-package": {"enabled": true}},'
+  printf '%s\n' '  "password": "PROJECT_PI_PASSWORD_SHOULD_NOT_LEAK"'
+  printf '%s\n' '}'
+} > "$project/.pi/settings.json"
+
 HOME="$home_dir" bash "$CHECKER" "$project" summary >"$tmpdir/context.out"
 grep -q '^agent_instruction_status: PASS$' "$tmpdir/context.out"
 grep -q '^codex_status: PASS$' "$tmpdir/context.out"
 grep -q '^project_trust: exact:trusted$' "$tmpdir/context.out"
 grep -q 'api_key=\[REDACTED\]' "$tmpdir/context.out"
 grep -q 'token=\[REDACTED\]' "$tmpdir/context.out"
+grep -q '^=== PI SURFACE ===$' "$tmpdir/context.out"
+grep -q '^pi_status: PASS$' "$tmpdir/context.out"
+grep -q '^global_settings_json: yes$' "$tmpdir/context.out"
+grep -q '^project_settings_json: yes$' "$tmpdir/context.out"
+grep -q '^global_pi_skill_roots: 1$' "$tmpdir/context.out"
+grep -q '^project_pi_skill_roots: 1$' "$tmpdir/context.out"
+grep -q '^global_agents_skill_roots: 1$' "$tmpdir/context.out"
+grep -q '  ./skills' "$tmpdir/context.out"
+grep -q '  global_settings.skills: core' "$tmpdir/context.out"
+grep -q '  project_settings.skills: local' "$tmpdir/context.out"
+grep -q '  global_settings.packages: npm:@tw93/waza' "$tmpdir/context.out"
+grep -q '  project_settings.packages: project-package' "$tmpdir/context.out"
+grep -q 'global_settings.apiToken=\[REDACTED\]' "$tmpdir/context.out"
+grep -q 'project_settings.password=\[REDACTED\]' "$tmpdir/context.out"
 if grep -q 'SHOULD_NOT_LEAK' "$tmpdir/context.out"; then
   echo "agent context leaked sensitive config"; exit 1
 fi

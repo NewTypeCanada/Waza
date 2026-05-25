@@ -154,6 +154,9 @@ def build_package_json(version: str) -> str:
             "!**/__pycache__/**",
             "!**/*.pyc",
         ],
+        "publishConfig": {
+            "access": "public",
+        },
         "pi": {
             "skills": [
                 "./skills",
@@ -194,12 +197,14 @@ def render_dispatcher(template: str, skills: list[dict]) -> str:
 README_INSTALL_URL_RE = re.compile(
     r"raw\.githubusercontent\.com/tw93/Waza/(?:main|v\d+\.\d+\.\d+)/scripts/"
 )
+README_SWAP_TAG_RE = re.compile(r"swap `v\d+\.\d+\.\d+` for `main`")
 WAZA_REF_RE = re.compile(r'WAZA_REF="\$\{WAZA_REF:-(?:main|v\d+\.\d+\.\d+)\}"')
 
 
 def render_readme(current: str, version: str) -> str:
     pinned = f"raw.githubusercontent.com/tw93/Waza/v{version}/scripts/"
-    return README_INSTALL_URL_RE.sub(pinned, current)
+    current = README_INSTALL_URL_RE.sub(pinned, current)
+    return README_SWAP_TAG_RE.sub(f"swap `v{version}` for `main`", current)
 
 
 def render_script_ref(current: str, version: str) -> str:

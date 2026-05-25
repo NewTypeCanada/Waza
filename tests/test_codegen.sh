@@ -34,6 +34,7 @@ printf '%s\n' '{"plugins": []}' > "$tmpdir/regen/.claude-plugin/marketplace.json
 test "$(jq '.plugins | length' "$tmpdir/regen/.claude-plugin/marketplace.json")" -eq 9
 test "$(jq -r '.name' "$tmpdir/regen/package.json")" = "@tw93/waza"
 test "$(jq -r '.pi.skills[0]' "$tmpdir/regen/package.json")" = "./skills"
+test "$(jq -r '.publishConfig.access' "$tmpdir/regen/package.json")" = "public"
 
 # README install URLs must be pinned to VERSION, not floating on main.
 copy_repo "$tmpdir/readme"
@@ -60,6 +61,7 @@ p = '$tmpdir/package/package.json'
 d = json.load(open(p))
 d['version'] = '0.0.0'
 d['pi'] = {'skills': ['./wrong']}
+d['publishConfig'] = {'access': 'private'}
 open(p,'w').write(json.dumps(d, indent=2) + '\n')
 "
 if (cd "$tmpdir/package" && python3 scripts/build_metadata.py --check >"$tmpdir/package.out" 2>"$tmpdir/package.err"); then
@@ -69,6 +71,7 @@ grep -q 'package.json is out of sync' "$tmpdir/package.err"
 (cd "$tmpdir/package" && python3 scripts/build_metadata.py >"$tmpdir/package-regen.out")
 test "$(jq -r '.version' "$tmpdir/package/package.json")" = "$version"
 test "$(jq -r '.pi.skills[0]' "$tmpdir/package/package.json")" = "./skills"
+test "$(jq -r '.publishConfig.access' "$tmpdir/package/package.json")" = "public"
 
 # Installer scripts must also default to the current release tag; overriding
 # WAZA_REF=main remains available for bleeding-edge installs.

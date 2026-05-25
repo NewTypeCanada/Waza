@@ -77,7 +77,7 @@ Download [waza.zip](https://github.com/tw93/Waza/releases/latest/download/waza.z
 
 **Pi coding agent**
 
-Pi can load Waza's standard `skills/<name>/SKILL.md` layout from the repo or from package metadata that points `pi.skills` at `./skills`. The skills are usable today; `/health` still focuses on Codex and Claude Code runtime audits, so Pi-specific runtime audit coverage is pending.
+Pi can load Waza's standard `skills/<name>/SKILL.md` layout from the repo or from package metadata that points `pi.skills` at `./skills`. Install from npm with `pi install npm:@tw93/waza`; `/health` audits Pi settings, configured packages, and local skill roots alongside Claude Code and Codex.
 
 **Update**
 
@@ -89,7 +89,7 @@ Marketplace installs use `claude plugin update <skill>`. Claude Desktop users ca
 
 **Compatibility**
 
-`/health` now supports Agent Health for both Claude Code and Codex. It understands `AGENTS.md`, `CLAUDE.md`, Copilot/Gemini instruction files, Codex config summaries, Claude hooks/MCP when present, verifier logs, and AI maintainability signals. It defaults to summary mode and only deepens when you ask for a deep/full audit or when the summary pass cannot classify the risk.
+`/health` now supports Agent Health for Claude Code, Codex, and Pi. It understands `AGENTS.md`, `CLAUDE.md`, Copilot/Gemini instruction files, Codex config summaries, Pi package and skill roots, Claude hooks/MCP when present, verifier logs, and AI maintainability signals. It defaults to summary mode and only deepens when you ask for a deep/full audit or when the summary pass cannot classify the risk.
 
 ## Project Context
 
@@ -127,7 +127,7 @@ A minimal statusline for Claude Code: context window, 5-hour quota, and 7-day qu
 Color coding: green below 70%, yellow at 70-85%, red above 85% for context; blue, magenta, red for quota thresholds. No progress bars, no noise.
 
 ```bash
-curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.24.0/scripts/setup-statusline.sh | bash
+curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.25.0/scripts/setup-statusline.sh | bash
 ```
 
 **Codex**
@@ -152,10 +152,10 @@ Optional rule for English practice. When your prompt contains an English mistake
 
 ```bash
 # Claude Code
-curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.24.0/scripts/setup-rule.sh | bash -s -- english claude-code
+curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.25.0/scripts/setup-rule.sh | bash -s -- english claude-code
 
 # Codex
-curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.24.0/scripts/setup-rule.sh | bash -s -- english codex
+curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.25.0/scripts/setup-rule.sh | bash -s -- english codex
 ```
 
 ### Anti-Patterns
@@ -163,10 +163,10 @@ curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.24.0/scripts/setup-rule.
 Optional always-on guardrails for cross-skill behaviors: stop acting before reading, no hallucinated paths, no scope creep, no unsolicited summaries. Skill-agnostic, applies in every session.
 
 ```bash
-curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.24.0/scripts/setup-rule.sh | bash -s -- anti-patterns claude-code
+curl -sL https://raw.githubusercontent.com/tw93/Waza/v3.25.0/scripts/setup-rule.sh | bash -s -- anti-patterns claude-code
 ```
 
-Use `codex` instead of `claude-code` for Codex. Curl URLs are pinned to the current release tag for reproducibility; swap `v3.24.0` for `main` if you want bleeding-edge scripts.
+Use `codex` instead of `claude-code` for Codex. Curl URLs are pinned to the current release tag for reproducibility; swap `v3.25.0` for `main` if you want bleeding-edge scripts.
 
 ## Uninstall
 
@@ -189,7 +189,7 @@ Eight skills for the habits that actually matter. Each does one thing, has a cle
 
 Built from patterns across real projects, refined through actual use. Every gotcha traces to a real failure: a wrong code path that took four rounds to find, a release posted before artifacts were uploaded, a server restarted eight times without reading the error. 30 days, 300+ sessions, 7 projects, 500 hours.
 
-The `/health` skill grew from the six-layer Claude Code framework described in [this post](https://tw93.fun/en/2026-03-12/claude.html), and now extends it into Agent Health for Codex, Claude Code, verifier surfaces, and AI maintainability.
+The `/health` skill grew from the six-layer Claude Code framework described in [this post](https://tw93.fun/en/2026-03-12/claude.html), and now extends it into Agent Health for Codex, Claude Code, Pi, verifier surfaces, and AI maintainability.
 
 ## Support
 
